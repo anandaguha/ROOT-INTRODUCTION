@@ -128,20 +128,26 @@ void stackHist(const TString& folderName)
             {
                 if (countelec == 1){
                     //write to elec mu hist
+                    std::cout <<  sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) )  << std::endl;
                     histEMu -> Fill( sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) ), genWeight );
                 }
                 else if (countmu == 2){
                     //write to mumu hist
+                    std::cout <<  sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) )  << std::endl;
                     histMuMu -> Fill( sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) ),genWeight );
                 }
                 else
                 {
-                    //write to ee hist        
+                    //write to ee hist
+                    std::cout <<  sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) )  << std::endl;
                     histEE -> Fill( sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) ),genWeight );
                 }
                 genWeightSum += genWeight;
             }
-
+        px.clear();
+        py.clear();
+        pz.clear();
+        Energy.clear();
         }//end of looking at good event
     }//end looking at all events
 
