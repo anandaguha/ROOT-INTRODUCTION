@@ -104,7 +104,7 @@ void stackHist(const TString& folderName)
             countelec = 0;
             countmu =0;
             for (UInt_t i = 0; i < numberOfMunons; i++){
-                if (pT_mu[i] > 25 && id_mu && abs(eta_mu[i]) < 2.4 && relEnergy_mu[i] < 0.15){
+                if (pT_mu[i] > 25 && id_mu[i] && abs(eta_mu[i]) < 2.4 && relEnergy_mu[i] < 0.15){
 
                     px.push_back(pT_mu[i] * cos(phi_mu[i]));
                     py.push_back(pT_mu[i] * sin(phi_mu[i]));
@@ -115,7 +115,7 @@ void stackHist(const TString& folderName)
 
             }
             for (UInt_t i = 0; i < numberOfElec; i++){
-                if (pT_elec[i] > 25 && id_elec && abs(eta_elec[i]) < 2.4 && relEnergy_elec[i] < 0.15){
+                if (pT_elec[i] > 25 && id_elec[i] && abs(eta_elec[i]) < 2.4 && relEnergy_elec[i] < 0.15){
 
                     px.push_back(pT_elec[i] * cos(phi_elec[i]));
                     py.push_back(pT_elec[i] * sin(phi_elec[i]));

@@ -19,13 +19,13 @@
 void plotStackedHist (){
     TDirectory *curdir = gDirectory;
 
-//    THStack *hs = new THStack("hs", "");
+    THStack *hs = new THStack("hs", "");
     TH1F *histDY;
     TH1F *histWW;
     TH1F *histTT;
     TCanvas canvasForEE ("Canvas for elec elec");
-//    TCanvas canvasForMuE ("Canvas for mu elec");
-//    TCanvas canvasForMuMu ("Canvas for mu mu");
+    TCanvas canvasForMuE ("Canvas for mu elec");
+    TCanvas canvasForMuMu ("Canvas for mu mu");
 
 
     TFile *inDY = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8-Result/hist.root","read");
@@ -34,7 +34,7 @@ void plotStackedHist (){
 
     gStyle -> SetOptStat(0);
 
-//    hs ->SetTitle("");
+    hs ->SetTitle("");
 //    hs->GetYaxis()->SetTitle("Events");
     /******************************************************************************************************************/
     //for electron
@@ -62,20 +62,21 @@ void plotStackedHist (){
 
 //    hs->GetXaxis()->SetTitle("m_{ee}");;
 
-//    hs -> Add(histDY);
-//    hs -> Add(histWW);
-//    hs -> Add(histTT);
+    hs -> Add(histDY);
+    hs -> Add(histWW);
+    hs -> Add(histTT);
 
     canvasForEE.cd();
-    histDY -> Draw();
-//    hs -> Draw();
-//    hs -> RecursiveRemove(histDY);
-//    hs -> RecursiveRemove(histWW);
-//    hs -> RecursiveRemove(histTT);
+    hs -> Draw("hist");
+    canvasForEE.SaveAs("EEStack.png");
+
+    hs -> RecursiveRemove(histDY);
+    hs -> RecursiveRemove(histWW);
+    hs -> RecursiveRemove(histTT);
     curdir -> cd();
 
     /******************************************************************************************************************/
- /*   //for mu e
+    //for mu e
     inDY -> cd();
     histDY = (TH1F*)inDY -> Get("hpxEMu");
     curdir -> cd ();
@@ -88,7 +89,7 @@ void plotStackedHist (){
     histTT = (TH1F*)inTT -> Get("hpxEMu");
     curdir -> cd();
 
-    hs->GetXaxis()->SetTitle("m_{/mu e}");
+//    hs->GetXaxis()->SetTitle("m_{/mu e}");
     histTT ->SetFillColor(kRed);
     histWW ->SetFillColor(kBlue);
     histDY -> SetFillColor(kGreen);
@@ -97,15 +98,16 @@ void plotStackedHist (){
     hs -> Add(histWW);
     hs -> Add(histTT);
 
-    canvasForEE.cd();
-    hs -> Draw();
+    canvasForMuE.cd();
+    hs -> Draw("hist");
+    canvasForMuE.SaveAs("MuEStack.png");
     hs -> RecursiveRemove(histDY);
     hs -> RecursiveRemove(histWW);
     hs -> RecursiveRemove(histTT);
     curdir -> cd();
     /******************************************************************************************************************/
     //for mu mu
-  /*  inDY -> cd();
+    inDY -> cd();
     histDY = (TH1F*)inDY -> Get("hpxMuMu");
     curdir -> cd ();
 
@@ -126,8 +128,9 @@ void plotStackedHist (){
     hs -> Add(histWW);
     hs -> Add(histTT);
 
-    canvasForEE.cd();
-    hs -> Draw();
+    canvasForMuMu.cd();
+    hs -> Draw("hist");
+    canvasForMuMu.SaveAs("MuMuStack.png");
     hs -> RecursiveRemove(histDY);
     hs -> RecursiveRemove(histWW);
     hs -> RecursiveRemove(histTT);
@@ -135,12 +138,9 @@ void plotStackedHist (){
     /******************************************************************************************************************/
     //should be implemented in a loop
 
-    canvasForEE.SaveAs("EEStack.png");
-//    canvasForMuE.SaveAs("MuEStack.png");
-//    canvasForMuMu.SaveAs("MuMuStack.png");
 
 
-//    delete hs;
+    delete hs;
 
     inDY -> Close();
     inWW -> Close();
