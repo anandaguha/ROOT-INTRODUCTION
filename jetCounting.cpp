@@ -138,7 +138,7 @@ void jetCounting (){
                         else
                             jet_Phi[i] -= 2*M_PI;
                     }
-                    if(jetId[i]>>1 & 1 && abs(jet_Eta[i]) <= 2.5 && jet_Pt[i] >= 30 && sqrt(pow(jet_Phi[i],2) + pow(jet_Eta[i],2) ) >= 0.4 ){
+                    if(jetId[i]>>1 & 1 && abs(jet_Eta[i]) <= 2.5 && jet_Pt[i] >= 30 && sqrt(pow(jet_Phi[i],2) + pow(jet_Eta[i],2) ) >= 0.4 && jet_btagDeepFlavB[i] > 0.2783  ){
                         countJets++;
                     }
                 }
