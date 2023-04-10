@@ -56,6 +56,12 @@ void jetCounting (){
     Float_t genWeight;
     Float_t genWeightSum;
 
+    //cross-sectional areas that might change
+    Float_t CrossSection;
+//    UInt_t DYCross = 6225.4;
+//    UInt_t TTCross = 87.3348;
+//    UInt_t WWCross = 11.08;
+
     Int_t countJets = 0;
     Int_t countLeptons = 0;
     Float_t delR = 0;
@@ -64,6 +70,7 @@ void jetCounting (){
     std::vector<TLorentzVector> Leptons;
     TString typeRun = "bJetCounting"; //this should be changed when you do another run ie MET or Bjet etc.
     TDirectory* curDir= gDirectory;
+
     //file stuff
     const char* filePathInput = "/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/dy_0.root";
     TString typeProcess;
