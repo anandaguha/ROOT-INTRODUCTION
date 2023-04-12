@@ -51,6 +51,7 @@ void jetCounting (){
     Float_t jet_Pt[50];
     Float_t jet_Phi[50];
     Float_t jet_btagDeepFlavB[50];
+    Float_t jet_Mass[50];
     Int_t jetId[50];
 
     Float_t genWeight;
@@ -68,6 +69,7 @@ void jetCounting (){
 
 //    ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiMVector> Particles [50];
     std::vector<TLorentzVector> Leptons;
+    std::vector<TLorentzVector> Jets;
     TString typeRun = "bJetCounting"; //this should be changed when you do another run ie MET or Bjet etc.
     TDirectory* curDir= gDirectory;
 
@@ -77,11 +79,12 @@ void jetCounting (){
     TString constantString = "/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/";
 
 //    TFile *result = TFile::Open(constantString + folderName + "-Result/jetHist.root", "recreate"); //not sure
-    TFile *fileIn = TFile::Open(filePathInput,"read");
+//    TFile *fileIn = TFile::Open(filePathInput,"read");
 
-
+    /*This is all the histograms that are being made*/
     TH1F *histJets = new TH1F("hpxJet","",100,-2,100);
-    TH1F *histMET =  new TH1F("hpxMet", "", 100,0,10);
+    TH1F *histMET =  new TH1F("hpxMet", "", 13000,0,13000);
+    TH1F *histLowEPair = new TH1F("hpxEPair", "", 100,0,100);
 //    TCanvas can ("JetFromDy");
 
 
@@ -92,21 +95,23 @@ void jetCounting (){
                 typeProcess = "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8";
                 histJets ->SetName(typeRun + "Jet");
                 histMET -> SetName(typeRun + "MET");
+                histLowEPair -> SetName(typeRun+ "MLB");
                 break;
             case 1:
                 typeProcess = "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8";
                 histJets ->SetName(typeRun + "Jet");
                 histMET -> SetName(typeRun + "MET");
+                histLowEPair -> SetName(typeRun+ "MLB");
                 break;
             case 2:
                 typeProcess = "WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8";
                 histJets ->SetName(typeRun + "Jet");
                 histMET -> SetName(typeRun + "MET");
+                histLowEPair -> SetName(typeRun+ "MLB");
                 break;
 
         }
-        TFile *resultFile = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/" + typeProcess + "Jet.root", "recreate"); //opens a file for the results of 1 process
-        TFile *resultFileMET = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/" + typeProcess + "MET.root", "recreate");
+
         TChain *mainTree = new TChain("Events"); //creates the chain that will hold all the branches from 1 process
         mainTree -> Add(constantString + typeProcess + "/*.root"); //adds all the files for 1 process (ie dy*.root)
 
@@ -135,10 +140,11 @@ void jetCounting (){
         mainTree -> SetBranchAddress("Jet_pt", jet_Pt);
         mainTree ->SetBranchAddress("Jet_phi",jet_Phi);
         mainTree ->SetBranchAddress("Jet_btagDeepFlavB",jet_btagDeepFlavB);
+        mainTree ->SetBranchAddress("Jet_mass",jet_Mass);
         mainTree -> SetBranchAddress("nJet", &numberOfJets);
         std::cout << "Events: " << events << std::endl;
         for (UInt_t event = 0; event < events; event++){
-            std::cout << "Got here"<< std::endl;
+//            std::cout << "Got here"<< std::endl;
             mainTree ->GetEntry(event);
             if (numberOfElec + numberOfMunons >= 2){
                 countLeptons = 0;
@@ -151,7 +157,8 @@ void jetCounting (){
                         Leptons.push_back(v);
                     }
 
-                }
+                }//gets the # of good muons
+
                 for (UInt_t i = 0; i < numberOfElec; i++){
                     if (pT_elec[i] > 25 && id_elec[i] && abs(eta_elec[i]) < 2.4 && relEnergy_elec[i] < 0.15){
                         countLeptons++;
@@ -159,10 +166,10 @@ void jetCounting (){
                         v.SetPtEtaPhiM(pT_elec[i],eta_elec[i],phi_elec[i],mass_elec[i]);
                         Leptons.push_back(v);
                     }
-                }
-                if(countLeptons == 2)
-                {
-                    Float_t CountedTransE = 0;
+                }//gets the # of good electrons
+
+                //if this event is a good one we can check if it has the right number of jets
+                if(countLeptons == 2){
                     for (UInt_t i = 0; i < numberOfJets; i++){
                         while (abs(jet_Phi[i]) > M_PI)
                         {
@@ -170,32 +177,53 @@ void jetCounting (){
                                 jet_Phi[i] += 2*M_PI;
                             else
                                 jet_Phi[i] -= 2*M_PI;
-                        }
+                        }//fixes phi to be between - pi and pi
+
                         if(jetId[i]>>1 & 1 && abs(jet_Eta[i]) <= 2.5 && jet_Pt[i] >= 30 && sqrt(pow(jet_Phi[i],2) + pow(jet_Eta[i],2) ) >= 0.4 && jet_btagDeepFlavB[i] > 0.2783  ){
                             countJets++;
-                        }
+                            TLorentzVector v;
+                            v.SetPtEtaPhiM(jet_Pt[i],jet_Eta[i],jet_Phi[i],jet_Mass[i]);
+                            Jets.push_back(v);
+                        }//selects the good jets
                     }
+
                     if (countJets == 2){
+                        Float_t CountedTransE = 0;
+                        Float_t MLB = 0;
                         for (auto i : Leptons){
                             CountedTransE += i.Et();
-//                        histMET -> Fill();
-                        }
 
+                        }
+                        for (auto i : Jets)
+                        {
+                            CountedTransE += i.Et();
+                        }
                         histMET -> Fill(13000-CountedTransE);
-                    }
+                        histLowEPair ->Fill(std::min(Jets[0].M(),Jets[1].M())+std::min(Leptons[0].M(),Leptons[1].M()));
+//                        std::cout <<"MET:" <<13000-CountedTransE << std::endl;
+                    }// Calulate MET and MLB since all the reqs have been met
                     histJets ->  Fill(countJets);
-                }
-            }//end of looking at good event
+                } //#ENDIF
+            }//end of looking at good event #ENDIF
             Leptons.clear();
-        }//end looking at all events
+            Jets.clear();
+        }//end looking at all events #ENDFOR
 //        std::cout << "Priting" << typeProcess << std::endl;
+        TFile *resultFile = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/" + typeProcess + "Jet.root", "recreate"); //opens a file for the results of 1 process
+        TFile *resultFileMET = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/" + typeProcess + "MET.root", "recreate");
+        TFile *resultFileMLB = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/" + typeProcess + "MLB.root", "recreate");
+
         resultFile ->WriteTObject(histJets);
         resultFileMET ->WriteTObject(histMET);
+        resultFileMLB ->WriteTObject(histLowEPair);
+
         delete mainTree;
     }//end all three proceeses
     delete histJets;
     delete histMET;
-    fileIn ->Close();
+    delete histLowEPair;
+
+//    fileIn ->Close();
 
 }//end main
 void runningForLoop(const char* typeRun){

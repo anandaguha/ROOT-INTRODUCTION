@@ -68,7 +68,8 @@ void plotStackedHist (){
 
     canvasForEE.cd();
     hs -> Draw("hist");
-    canvasForEE.SaveAs("EEStack.png");
+    canvasForEE.SetLogy();
+    canvasForEE.SaveAs("EEStackLog.png");
 
     hs -> RecursiveRemove(histDY);
     hs -> RecursiveRemove(histWW);
@@ -130,7 +131,9 @@ void plotStackedHist (){
 
     canvasForMuMu.cd();
     hs -> Draw("hist");
-    canvasForMuMu.SaveAs("MuMuStack.png");
+    canvasForMuMu.SetLogy();
+
+    canvasForMuMu.SaveAs("MuMuStackLogY.png");
     hs -> RecursiveRemove(histDY);
     hs -> RecursiveRemove(histWW);
     hs -> RecursiveRemove(histTT);
