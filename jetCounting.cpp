@@ -90,7 +90,7 @@ void jetCounting() {
 
     /*This is all the histograms that are being made*/
     TH1F *histJets = new TH1F("hpxJet", "", 100, 0, 10);
-    TH1F *histMET = new TH1F("hpxMet", "", 1000, 0, 100);
+    TH1F *histMET = new TH1F("hpxMet", "", 100, 0, 100);
     TH1F *histLowEPair = new TH1F("hpxEPair", "", 100, 0, 100);
 //    TCanvas can ("JetFromDy");
 
