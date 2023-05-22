@@ -20,7 +20,7 @@
 #include <vector>
 
 
-void plotStackedHistGenLooped (){
+void plotStackedHistGenLoop (){
     TDirectory *curdir = gDirectory;
     TString runType;
 

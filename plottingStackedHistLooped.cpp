@@ -29,8 +29,8 @@ void plotStackedHistLooped (){
     TCanvas canvasForMuMu ("Canvas for mu mu");
 
 
-    TFile *inDY = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8-Result/hist.root","read");
-    TFile *inWW = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8-Result/hist.root","read");
+    TFile *inDY = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/Root/root/macros/ROOTiNTRODUCTION/JetFromDy.png","read");
+    TFile *inWW = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/Root/root/macros/ROOTiNTRODUCTION/JetFromDy.png","read");
     TFile *inTT = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8-Result/hist.root","read");
 
     gStyle -> SetOptStat(0);

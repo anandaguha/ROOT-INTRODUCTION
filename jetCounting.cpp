@@ -90,8 +90,8 @@ void jetCounting() {
 
     /*This is all the histograms that are being made*/
     TH1F *histJets = new TH1F("hpxJet", "", 100, 0, 10);
-    TH1F *histMET = new TH1F("hpxMet", "", 100, 0, 100);
-    TH1F *histLowEPair = new TH1F("hpxEPair", "", 100, 0, 100);
+    TH1F *histMET = new TH1F("hpxMet", "", 300, 0, 300);
+    TH1F *histLowEPair = new TH1F("hpxEPair", "", 200, 0, 200);
 //    TCanvas can ("JetFromDy");
 
 
@@ -181,17 +181,23 @@ void jetCounting() {
                 if (countLeptons == 2) {
                     for (UInt_t i = 0; i < numberOfJets; i++) {
                         vector1.SetPtEtaPhiM(jet_Pt[i], jet_Eta[i], jet_Phi[i], jet_Mass[i]);
-                        vector2.SetPtEtaPhiM(pT_elec[jet_MatchingElec[i]], eta_elec[jet_MatchingElec[i]],
-                                             phi_elec[jet_MatchingElec[i]], mass_elec[jet_MatchingElec[i]]);
-                        while (abs(jet_Phi[i]) > M_PI) {
-                            if (jet_Phi[i] < 0)
-                                jet_Phi[i] += 2 * M_PI;
-                            else
-                                jet_Phi[i] -= 2 * M_PI;
-                        }//fixes phi to be between - pi and pi
+                        Float_t min = INFINITY;
+                        for (auto k: Leptons) {
+                            if (abs(vector1.DeltaR(k)) < min )
+                            {
+                                min = abs(vector1.DeltaR(k));
+                                vector2 = k;
+                            }
+                        }
+//                        while (abs(jet_Phi[i]) > M_PI) {
+//                            if (jet_Phi[i] < 0)
+//                                jet_Phi[i] += 2 * M_PI;
+//                            else
+//                                jet_Phi[i] -= 2 * M_PI;
+//                        }//fixes phi to be between - pi and pi
 
                         if (jetId[i] >> 1 & 1 && abs(jet_Eta[i]) <= 2.5 && jet_Pt[i] >= 30 &&
-                            sqrt(pow(jet_Phi[i], 2) + pow(jet_Eta[i], 2)) >= 0.4 && jet_btagDeepFlavB[i] > 0.2783 &&
+                            jet_btagDeepFlavB[i] > 0.2783 &&
                             vector1.DeltaR(vector2) > 0.4) {
                             countJets++;
                             Jets.push_back(vector1);
