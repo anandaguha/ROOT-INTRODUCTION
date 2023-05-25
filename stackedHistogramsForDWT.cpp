@@ -97,7 +97,8 @@ void stackHist(const TString& folderName)
     mainTree->SetBranchAddress("Electron_mass", mass_elec);             //setting branch adresses for electron
     mainTree->SetBranchAddress("nElectron", &numberOfElec);                 //setting branch adresses for electron
     mainTree->SetBranchAddress("genWeight", &genWeight);
-
+    std::cout << events << std::endl;
+    std::cout << mainTree -> GetTreeNumber() << std::endl;
     for (UInt_t event = 0; event < events; event++){
         mainTree ->GetEntry(event);
         if (numberOfElec + numberOfMunons >= 2){
@@ -128,18 +129,18 @@ void stackHist(const TString& folderName)
             {
                 if (countelec == 1){
                     //write to elec mu hist
-                    std::cout <<  sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) )  << std::endl;
+//                    std::cout <<  sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) )  << std::endl;
                     histEMu -> Fill( sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) ), genWeight );
                 }
                 else if (countmu == 2){
                     //write to mumu hist
-                    std::cout <<  sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) )  << std::endl;
+//                    std::cout <<  sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) )  << std::endl;
                     histMuMu -> Fill( sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) ),genWeight );
                 }
                 else
                 {
                     //write to ee hist
-                    std::cout <<  sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) )  << std::endl;
+//                    std::cout <<  sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) )  << std::endl;
                     histEE -> Fill( sqrt(pow( accumulate(Energy.begin(), Energy.end(), 0.0),2 ) - ( pow(accumulate(px.begin(), px.end(),0.0),2) + pow(accumulate(py.begin(), py.end(), 0.0),2) + pow(accumulate(pz.begin(), pz.end(), 0.0),2)) ),genWeight );
                 }
                 genWeightSum += genWeight;

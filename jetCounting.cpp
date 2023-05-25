@@ -24,6 +24,13 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
+#include <filesystem>
+#include <string>
+
+//using std::cin; using std::cout;
+//using std::filesystem::directory_iterator;
+//using std::endl; using std::string;
+
 
 void runningForLoop(const char *);
 
@@ -70,12 +77,10 @@ void jetCounting() {
     Int_t countJets = 0;
     Int_t countLeptons = 0;
     Float_t delR = 0;
-    TLorentzVector vector1;
-    TLorentzVector vector2;
+
 
 //    ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiMVector> Particles [50];
-    std::vector<TLorentzVector> Leptons;
-    std::vector<TLorentzVector> Jets;
+
 
     TString typeRun = "bJetCounting"; //this should be changed when you do another run ie MET or Bjet etc.
     TDirectory *curDir = gDirectory;
@@ -96,6 +101,13 @@ void jetCounting() {
 
 
     for (int q = 0; q < 3; q++) {
+        histJets->Reset();
+        histMET -> Reset();
+        histLowEPair -> Reset();
+        TLorentzVector vector1;
+        TLorentzVector vector2;
+        std::vector<TLorentzVector> Leptons;
+        std::vector<TLorentzVector> Jets;
         switch (q) {
             case 0:
                 typeProcess = "DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8";
@@ -119,6 +131,9 @@ void jetCounting() {
         }
 
         TChain *mainTree = new TChain("Events"); //creates the chain that will hold all the branches from 1 process
+//        for (const auto & file: recursive_directory_iterator(constantString + typeProcess)) {
+//            cout << file.path() << endl;
+//        }
         mainTree->Add(constantString + typeProcess + "/*.root"); //adds all the files for 1 process (ie dy*.root)
 
 
@@ -154,8 +169,8 @@ void jetCounting() {
         mainTree->SetBranchAddress("MET_pt", &MET);
 
         std::cout << "Events: " << events << std::endl;
+        std::cout << "Events: " << mainTree->GetTreeNumber()<< std::endl;
         for (UInt_t event = 0; event < events; event++) {
-//            std::cout << "Got here"<< std::endl;
             mainTree->GetEntry(event);
             if (numberOfElec + numberOfMunons >= 2) {
                 countLeptons = 0;
@@ -208,14 +223,14 @@ void jetCounting() {
                         Float_t CountedTransE = 0;
                         Float_t MLB = 0;
                         histMET->Fill(MET);
-                        Float_t min = INFINITY;
-                        for (auto i: Jets) {
-                            for (auto j: Leptons) {
-                                min = (i + j).M() < min ? (i + j).M() : min;
-                            }
-                        }
-                        histLowEPair->Fill(min);
                     } //#ENDIF
+                    Float_t min = INFINITY;
+                    for (auto i: Jets) {
+                        for (auto j: Leptons) {
+                            min = (i + j).M() < min ? (i + j).M() : min;
+                        }
+                    }
+                    histLowEPair->Fill(min);
                     histJets->Fill(countJets);
                 }
             }//end of looking at good event #ENDIF
@@ -236,6 +251,7 @@ void jetCounting() {
         resultFileMLB->WriteTObject(histLowEPair);
 
         delete mainTree;
+        mainTree = nullptr;
     }//end all three proceeses
     delete histJets;
     delete histMET;

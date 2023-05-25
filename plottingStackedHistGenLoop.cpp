@@ -94,7 +94,7 @@ void plotStackedHistGenLoop (){
 
         canvas.cd();
 
-        canvas.SetLogy();
+//        canvas.SetLogy();
         hs -> Draw("hist");
         histTT ->SetFillColor(kRed);
         histWW ->SetFillColor(kBlue);
@@ -107,7 +107,7 @@ void plotStackedHistGenLoop (){
         }
 
         legend->Draw();
-        canvas.SaveAs(runType+"Log.png");
+        canvas.SaveAs(runType+".png");
 
         hs -> RecursiveRemove(histDY);
         hs -> RecursiveRemove(histWW);

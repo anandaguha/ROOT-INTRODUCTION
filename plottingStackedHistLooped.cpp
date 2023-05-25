@@ -9,6 +9,7 @@
 #include "TCanvas.h"
 #include "THStack.h"
 #include "TStyle.h"
+#include "TLegend.h"
 
 
 #include <iostream>
@@ -27,10 +28,12 @@ void plotStackedHistLooped (){
     TCanvas canvasForEE ("Canvas for elec elec");
     TCanvas canvasForMuE ("Canvas for mu elec");
     TCanvas canvasForMuMu ("Canvas for mu mu");
+    TLegend* legend = new TLegend(0.1,0.7,0.3,0.9);
 
 
-    TFile *inDY = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/Root/root/macros/ROOTiNTRODUCTION/JetFromDy.png","read");
-    TFile *inWW = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/Root/root/macros/ROOTiNTRODUCTION/JetFromDy.png","read");
+
+    TFile *inDY = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8-Result/hist.root","read");
+    TFile *inWW = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8-Result/hist.root","read");
     TFile *inTT = TFile::Open("/home/ananda/Documents/UCSB/Research_Particle_Phys/afiles/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8-Result/hist.root","read");
 
     gStyle -> SetOptStat(0);
@@ -44,12 +47,15 @@ void plotStackedHistLooped (){
         switch (i) {
             case 0:
                 runType = "hpxEE";
+                legend->SetHeader("Two Electron final state","C"); // option "C" allows to center the header
                 break;
             case 1:
                 runType = "hpxEMu";
+                legend->SetHeader("Electron Muon final state","C"); // option "C" allows to center the header
                 break;
             case 2:
                 runType = "hpxMuMu";
+                legend->SetHeader("Two Muon final state","C"); // option "C" allows to center the header
                 break;
             default:
                 break;
@@ -82,9 +88,33 @@ void plotStackedHistLooped (){
         hs -> Add(histWW);
         hs -> Add(histTT);
 
-        canvasForEE.cd();
-        hs -> Draw("hist");
-        canvasForEE.SaveAs(runType+".png");
+        switch (i) {
+            case 0:
+                canvasForEE.cd();
+//                canvasForEE.SetLogy();
+                hs -> Draw("hist");
+                legend->AddEntry(histDY,"Drell Yan","f");
+                legend->AddEntry(histWW,"WW","f");
+                legend->AddEntry(histTT,"TT","f");
+                legend->Draw();
+                canvasForEE.SaveAs(runType+".png");
+                break;
+            case 1:
+                canvasForMuE.cd();
+//                canvasForMuE.SetLogy();
+                hs -> Draw("hist");
+                legend->Draw();
+                canvasForMuE.SaveAs(runType+".png");
+                break;
+            case 2:
+                canvasForMuMu.cd();
+//                canvasForMuMu.SetLogy();
+                hs -> Draw("hist");
+                legend->Draw();
+                canvasForMuMu.SaveAs(runType+".png");
+                break;
+        }
+
 
         hs -> RecursiveRemove(histDY);
         hs -> RecursiveRemove(histWW);
